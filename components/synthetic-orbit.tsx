@@ -1,8 +1,8 @@
 'use client'
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Float, MeshTransmissionMaterial } from '@react-three/drei'
-import { useRef } from 'react'
+import { Float } from '@react-three/drei'
+import { useEffect, useRef, useState } from 'react'
 import type { Group, Mesh } from 'three'
 
 function Sculpture() {
@@ -24,20 +24,13 @@ function Sculpture() {
     <group ref={group} scale={scale}>
       <Float speed={1.4} rotationIntensity={0.22} floatIntensity={0.35}>
         <mesh ref={core} rotation={[0.35, 0.5, 0.18]}>
-          <torusKnotGeometry args={[1.18, 0.38, 180, 24, 2, 3]} />
-          <MeshTransmissionMaterial
-            color="#ff5a36"
-            backside
-            backsideThickness={0.5}
-            thickness={1.2}
-            chromaticAberration={0.08}
-            anisotropicBlur={0.35}
-            distortion={0.35}
-            distortionScale={0.3}
-            temporalDistortion={0.08}
-            roughness={0.16}
-            transmission={0.96}
-            ior={1.25}
+          <torusKnotGeometry args={[1.18, 0.38, 96, 16, 2, 3]} />
+          <meshPhysicalMaterial
+            color="#ff5938"
+            roughness={0.24}
+            metalness={0.08}
+            clearcoat={0.75}
+            clearcoatRoughness={0.2}
           />
         </mesh>
         <mesh rotation={[1.3, 0.15, 0.7]}>
@@ -54,12 +47,29 @@ function Sculpture() {
 }
 
 export function SyntheticOrbit() {
+  const scene = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    if (!scene.current) return
+    const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
+      rootMargin: '120px',
+    })
+    observer.observe(scene.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className="scene" aria-hidden="true">
-      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 6.2], fov: 42 }} gl={{ antialias: true, alpha: true }}>
-        <ambientLight intensity={2.2} />
-        <directionalLight position={[4, 5, 4]} intensity={4} color="#fffdf7" />
-        <pointLight position={[-4, -2, 3]} intensity={8} color="#1846ff" />
+    <div ref={scene} className="scene" aria-hidden="true">
+      <Canvas
+        dpr={1}
+        frameloop={isVisible ? 'always' : 'never'}
+        camera={{ position: [0, 0, 6.2], fov: 42 }}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      >
+        <ambientLight intensity={2.4} />
+        <directionalLight position={[4, 5, 4]} intensity={4} color="#f3f0e9" />
+        <pointLight position={[-4, -2, 3]} intensity={5} color="#1846ff" />
         <Sculpture />
       </Canvas>
     </div>

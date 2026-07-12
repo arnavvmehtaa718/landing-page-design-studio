@@ -27,8 +27,8 @@ export function StudioLanding() {
       gsap.utils.toArray<HTMLElement>('[data-service]').forEach((item) => {
         gsap.from(item, { xPercent: 8, opacity: 0, scrollTrigger: { trigger: item, start: 'top 88%' }, duration: 0.85, ease: 'power3.out' })
       })
-      gsap.to('[data-orbit]', { yPercent: 32, rotate: 7, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 1 } })
-      gsap.to('[data-marquee]', { xPercent: -18, ease: 'none', scrollTrigger: { trigger: '#work', start: 'top bottom', end: 'bottom top', scrub: 1 } })
+      gsap.to('[data-orbit]', { yPercent: 12, ease: 'none', force3D: true, scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: 0.25 } })
+      gsap.to('[data-marquee]', { xPercent: -18, ease: 'none', force3D: true, scrollTrigger: { trigger: '#work', start: 'top bottom', end: 'bottom top', scrub: 0.25 } })
     }, root)
     return () => context.revert()
   }, [])
